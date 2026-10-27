@@ -44,6 +44,19 @@ Sayt: http://localhost:8080 · API hujjatlari: backend ichida `http://backend:80
 
 Konteyner ishga tushganda avtomatik: `alembic upgrade head` → namunaviy ma’lumotlar (`app.seed`) → server.
 
+## Bepul hosting: Netlify + Render + Neon
+
+Frontend Netlify’da, Python API Render’da, PostgreSQL bazasi Neon’da ishlaydi. Render bepul servisida uzoq vaqt so‘rov bo‘lmasa API uxlab qolishi, keyingi so‘rovda esa uyg‘onishi mumkin. Render bepul diskida yuklangan media doimiy saqlanmaydi.
+
+1. Neon’da PostgreSQL loyiha/baza yarating va pooled connection string’ni nusxalang (`sslmode=require` bo‘lishi kerak).
+2. Render’da **New → Blueprint** tanlab, `inatillayevsuhrob6-prog/kelajak-markazi` repository’sini ulang. Root’dagi `render.yaml` API servisni sozlaydi.
+3. Blueprint so‘raganda `DATABASE_URL` ga Neon connection string’ni, `ADMIN_EMAIL` va `ADMIN_PASSWORD` ga o‘zingizning admin ma’lumotlaringizni kiriting. Render `SECRET_KEY` ni o‘zi yaratadi. Groq AI uchun API kalitni Render servisining Environment bo‘limiga `GROQ_API_KEY` sifatida alohida qo‘shing; bu ixtiyoriy.
+4. Render deploy tugagach, `https://<render-servis-nomi>.onrender.com/api/health` manzilida `{"status":"ok"}` javobini tekshiring.
+5. Netlify → **Project configuration → Environment variables** bo‘limiga `VITE_API_URL=https://<render-servis-nomi>.onrender.com/api` qo‘shib, saytni qayta deploy qiling.
+6. Render servisining `CORS_ORIGINS` va `SITE_URL` qiymatlarini Netlify saytining haqiqiy HTTPS manziliga moslang.
+
+`.env` faylini GitHub’ga yoki Netlify frontend environment’iga joylamang. Admin uchun `admin123` kabi sodda parol ishlatmang.
+
 ## Lokal ishga tushirish (Docker’siz)
 
 ### Backend
