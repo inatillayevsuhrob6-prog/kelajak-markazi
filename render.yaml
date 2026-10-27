@@ -18,6 +18,8 @@ services:
         sync: false
       - key: ADMIN_NAME
         value: Administrator
+      - key: PYTHON_VERSION
+        value: 3.12.8
       - key: ACCESS_TOKEN_HOURS
         value: "24"
       - key: CORS_ORIGINS
