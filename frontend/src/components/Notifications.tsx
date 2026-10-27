@@ -13,7 +13,9 @@ export default function Notifications() {
   const box = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const load = () => api<{ items: Notice[] }>('/notifications').then((r) => setItems(r.items)).catch(() => {})
+    const load = () => api<{ items?: Notice[] }>('/notifications')
+      .then((r) => setItems(Array.isArray(r.items) ? r.items : []))
+      .catch(() => setItems([]))
     load()
     const id = setInterval(load, 60000)
     return () => clearInterval(id)

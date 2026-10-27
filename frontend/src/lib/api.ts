@@ -18,7 +18,12 @@ export async function api<T = any>(path: string, opts: { method?: string; body?:
     throw new ApiError('Serverga ulanib boʻlmadi', 0)
   }
   if (res.status === 204) return undefined as T
-  const data = await res.json().catch(() => ({}))
+  let data: any
+  try {
+    data = await res.json()
+  } catch {
+    throw new ApiError('Backend API ulanmagan yoki notoʻgʻri javob qaytardi', res.status)
+  }
   if (!res.ok) {
     let msg = 'Xatolik yuz berdi'
     if (typeof data.detail === 'string') msg = data.detail
